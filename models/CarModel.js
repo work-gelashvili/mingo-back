@@ -23,7 +23,15 @@ const CarSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type: String,
+    default: Date.now,
+  },
+  getDate: {
+    type: String,
+    default: Date.now,
+  },
+  getTime: {
+    type: String,
     default: Date.now,
   },
   seat_count: {

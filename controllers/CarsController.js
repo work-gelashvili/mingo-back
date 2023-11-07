@@ -1,15 +1,47 @@
 const CarModel = require("../models/CarModel");
 const SeatsModel = require("../models/SeatsModel");
 
+
+const useDateFormat = (date) => {
+  let itemDate = new Date(date)
+
+  const dateFormat = {
+      getMonth: () => {
+          let month = itemDate.getMonth() + 1
+          return month < 10 ? '0' + month : month
+      },
+      getDate: () => {
+          let date = itemDate.getDate()
+          return date < 10 ? '0' + date : date
+      },
+      getHours: () => {
+          let horse = itemDate.getHours()
+          return horse < 10 ? '0' + horse : horse
+      },
+      getMinutes: () => {
+          let minutes = itemDate.getMinutes()
+          return minutes < 10 ? '0' + minutes : minutes
+      },
+      getYear: () => {
+          let year = itemDate.getFullYear()
+          return year
+      }
+  } 
+
+  return dateFormat
+}
+
 const getCars = async (req, res) => {
   try {
-    const { from, to } = req.query;
+    const { from, to, getDate } = req.query;
 
-    if (from && to) {
+    if (from && to && getDate) {
       const cars = await CarModel.find({
         direction_from: from,
         direction_to: to,
+        getDate: getDate,
       });
+      
 
       return res.status(200).send(cars);
     }
@@ -33,6 +65,7 @@ const getCars = async (req, res) => {
 
     return res.status(200).send(cars);
   } catch (error) {
+    console.log(error)
     return res.status(500).send("Something went wrong while getting cars!");
   }
 };
@@ -44,6 +77,8 @@ const createCar = async (req, res) => {
     const {
       driver_name,
       date,
+      getDate,
+      getTime,
       direction_from,
       direction_to,
       plate,
@@ -62,6 +97,8 @@ const createCar = async (req, res) => {
       seats,
       driver_name,
       date: date ? date : new Date(),
+      getDate: date && `${useDateFormat(date).getDate()}-${useDateFormat(date).getMonth()}`,
+      getTime: date && `${useDateFormat(date).getHours()}:${useDateFormat(date).getMinutes()}`,
       direction_from,
       direction_to,
       plate,
