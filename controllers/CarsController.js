@@ -194,18 +194,44 @@ const deleteReserve = async (req, res) => {
 };
 
 
-// წაშლის ყველა წინა დღის მგზავრობას
-const deletePreviousRides = async () => {
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
 
-  await Ride.deleteMany({ createdAt: { $lt: todayStart } });
+// ✅ წაშლის ყველა წინა დღის მგზავრობას
+const deletePreviousRides = async () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  await CarModel.deleteMany({ createdAt: { $lt: today } });
 };
 
-// ამატებს ახალ მგზავრობას
-const addNewRide = async (rideData) => {
-  const newRide = new Ride(rideData);
-  await newRide.save();
+// ✅ ამატებს ახალ მგზავრობას
+const addNewRide = async (rideData = {}) => {
+  const {
+    driver_name = "Default Driver",
+    plate = "XX-000-XX",
+    direction_from = "Tbilisi",
+    direction_to = "Batumi",
+    seat_count = 10,
+  } = rideData;
+
+  const seats = Array.from({ length: seat_count }, (_, i) =>
+    new SeatsModel({ seat_id: i + 1 })
+  );
+
+  const now = new Date();
+  const format = useDateFormat(now);
+
+  const car = new CarModel({
+    driver_name,
+    plate,
+    direction_from,
+    direction_to,
+    seats,
+    seat_count,
+    date: now,
+    getDate: `${format.getDate()}-${format.getMonth()}`,
+    getTime: `${format.getHours()}:${format.getMinutes()}`,
+  });
+
+  await car.save();
 };
 
 

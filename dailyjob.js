@@ -1,25 +1,22 @@
-const cron = require('node-cron');
-const { deletePreviousRides, addNewRide } = require('./controllers/CarsController');
+const cron = require("node-cron");
+const { deletePreviousRides, addNewRide } = require("./controllers/CarsController");
 
-const startDailyRideJob = () => {
-  // შესრულდება ყოველდღე დილის 5 საათზე
-  cron.schedule('0 5 * * *', async () => {
-    try {
-      console.log('🚗 Daily job started');
+const startDailyJob = () => {
+  cron.schedule("0 5 * * *", async () => {
+    console.log("🚗 Daily job started...");
 
-      await deletePreviousRides();
+    await deletePreviousRides();
 
-      await addNewRide({
-        destination: 'Tbilisi', // შეგიძლია შეცვალო დინამიკურად
-        passengers: 3,
-        date: new Date(),
-      });
+    await addNewRide({
+      driver_name: "Generated Driver",
+      plate: "AA-123-BB",
+      direction_from: "tbilisi",
+      direction_to: "batumi",
+      seat_count: 12,
+    });
 
-      console.log('✅ Daily ride updated');
-    } catch (error) {
-      console.error('❌ Cron job error:', error);
-    }
+    console.log("✅ Daily car ride updated");
   });
 };
 
-module.exports = startDailyRideJob;
+module.exports = startDailyJob;
