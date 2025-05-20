@@ -2,6 +2,7 @@ const express = require("express");
 const router = require("./router");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const startDailyRideJob = require('./dailyjob');
 const cors = require("cors");
 require("dotenv").config();
 
@@ -33,6 +34,7 @@ mongoose
   })
   .then(() => {
     console.log("Connected to MongoDB");
+    startDailyRideJob()
   })
   .catch((err) => {
     console.log(err);

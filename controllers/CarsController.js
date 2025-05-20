@@ -193,7 +193,25 @@ const deleteReserve = async (req, res) => {
   }
 };
 
+
+// წაშლის ყველა წინა დღის მგზავრობას
+const deletePreviousRides = async () => {
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  await Ride.deleteMany({ createdAt: { $lt: todayStart } });
+};
+
+// ამატებს ახალ მგზავრობას
+const addNewRide = async (rideData) => {
+  const newRide = new Ride(rideData);
+  await newRide.save();
+};
+
+
 module.exports = {
+  deletePreviousRides,
+  addNewRide,
   getCars,
   createCar,
   reserveSeat,
